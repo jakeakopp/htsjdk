@@ -241,7 +241,7 @@ public class VariantContextUtils {
         return VariantContextUtils.initializeMatchExps(map);
     }
 
-    public static List<JexlVCMatchExp> initializeMatchExps(ArrayList<String> names, ArrayList<String> exps) {
+    public static List<JexlVCMatchExp> initializeMatchExps(List<String> names, List<String> exps) {
         String[] nameArray = new String[names.size()];
         String[] expArray = new String[exps.size()];
         return initializeMatchExps(names.toArray(nameArray), exps.toArray(expArray));
