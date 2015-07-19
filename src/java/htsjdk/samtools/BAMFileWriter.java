@@ -41,7 +41,7 @@ class BAMFileWriter extends SAMFileWriterImpl {
 
     private final BinaryCodec outputBinaryCodec;
     private BAMRecordCodec bamRecordCodec = null;
-    private final BlockCompressedOutputStream blockCompressedOutputStream;
+    protected final BlockCompressedOutputStream blockCompressedOutputStream;
     private BAMIndexer bamIndexer = null;
 
     protected BAMFileWriter(final File path) {

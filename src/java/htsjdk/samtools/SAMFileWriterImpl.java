@@ -125,7 +125,7 @@ public abstract class SAMFileWriterImpl implements SAMFileWriter
     /**
      * Must be called before addAlignment.
      */
-    public void setHeader(final SAMFileHeader header)
+    public void setHeader(final SAMFileHeader header, final boolean writeHeader)
     {
         this.header = header;
         if (sortOrder == null) {
@@ -136,7 +136,9 @@ public abstract class SAMFileWriterImpl implements SAMFileWriter
         new SAMTextHeaderCodec().encode(headerTextBuffer, header);
         final String headerText = headerTextBuffer.toString();
 
-        writeHeader(headerText);
+        if (writeHeader) {
+          writeHeader(headerText);
+        }
 
         if (presorted) {
             if (sortOrder.equals(SAMFileHeader.SortOrder.unsorted)) {

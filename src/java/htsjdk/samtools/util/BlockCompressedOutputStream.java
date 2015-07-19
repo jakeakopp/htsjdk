@@ -92,6 +92,7 @@ public class BlockCompressedOutputStream
     private final CRC32 crc32 = new CRC32();
     private File file = null;
     private long mBlockAddress = 0;
+    private boolean writeEndBlock = true;
 
 
     // Really a local variable, but allocate once to reduce GC burden.
@@ -223,11 +224,14 @@ public class BlockCompressedOutputStream
         //     System.err.println("In BlockCompressedOutputStream, had to throttle back " + numberOfThrottleBacks +
         //                        " times for file " + codec.getOutputFileName());
         // }
-        codec.writeBytes(BlockCompressedStreamConstants.EMPTY_GZIP_BLOCK);
+        if (writeEndBlock) {
+          codec.writeBytes(BlockCompressedStreamConstants.EMPTY_GZIP_BLOCK);
+        }
         codec.close();
         // Can't re-open something that is not a regular file, e.g. a named pipe or an output stream
         if (this.file == null || !this.file.isFile()) return;
-        if (BlockCompressedInputStream.checkTermination(this.file) !=
+        if (writeEndBlock &&
+            BlockCompressedInputStream.checkTermination(this.file) !=
                 BlockCompressedInputStream.FileTermination.HAS_TERMINATOR_BLOCK) {
             throw new IOException("Terminator block not found after closing BGZF file " + this.file);
         }
@@ -243,6 +247,10 @@ public class BlockCompressedOutputStream
     public void write(final int bite) throws IOException {
         singleByteArray[0] = (byte)bite;
         write(singleByteArray);
+    }
+    
+    public void setWriteEndBlock(final boolean writeEndBlock) {
+      this.writeEndBlock = writeEndBlock;
     }
 
     /** Encode virtual file pointer
